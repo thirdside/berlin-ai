@@ -13,22 +13,22 @@ module Berlin
         @links              = []
       end
 
-      # Register a given node as an adjacent one.
+      # Registers a given node as an adjacent one.
       def link_to other_node
         @links << other_node
       end
 
-      # Is other_node adjacents to current node?
+      # Returns true if other_node is adjacent to self
       def adjacent? other_node
         @links.include? other_node
       end
       
-      # Is there anybody out there?
+      # Returns true if self has more than zero soldier
       def occupied?
         @number_of_soldiers > 0
       end
 
-      # What are current node's neighbors?
+      # Returns a list of all adjacent nodes
       def adjacent_nodes
         @links.dup
       end

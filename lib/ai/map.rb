@@ -1,6 +1,6 @@
 module Berlin
   module AI
-    # Map will keep track of all the useful information needed to play, such as
+    # Map keeps track of all the useful information needed to play, such as
     # nodes, points, soldiers, etc. Game will then be able to pick any information
     # it wants from map to decide what are the best moves to do.
     class Map

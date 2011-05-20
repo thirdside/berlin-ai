@@ -1,13 +1,15 @@
 module Berlin
   module AI
+    # Game keeps track of current games played by the server, indexing them on their uniq id.
     class Game
       attr_reader :id
       
+      # Keep track of all current games
       @@games = {}
       
       def self.create_or_update action, infos, map, state
         # Check for params and quit on errors
-        return nil if action.nil? || infos.nil? || map.nil? || state.nil?
+        return if action.nil? || infos.nil? || map.nil? || state.nil?
         
         # First, we parse the received request
         infos  = JSON.parse( infos )
@@ -21,7 +23,7 @@ module Berlin
 
         if action == "game_over"
           # Release the game to avoid memory leaks
-          @@games[game_id] = nil
+          @@games.delete game_id
         elsif state
           # Now, we want to update the current state of the game with the new content
           game.update state
@@ -30,19 +32,17 @@ module Berlin
         game
       end
       
-      # @id = Uniq game ID (params[:game])
-      # @map = Current state of the game (params[:json])
       def initialize id, map, infos
-        @id         = id
-        @map        = Berlin::AI::Map.new map, infos
+        @id  = id
+        @map = Berlin::AI::Map.new map, infos
       end
 
-      # Let's update the map with the latest state
       def update state
         @map.update state
       end
       
-      # Must be overwritten
+      # This method must be overritten with yours. The return value of this method will be returned
+      # in a json format to Berlin and be interpreted as the moves you'd like to do.
       def turn_moves
         raise "Please... overwrite me!"
       end
