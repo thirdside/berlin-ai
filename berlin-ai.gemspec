@@ -14,8 +14,8 @@ Gem::Specification.new do |s|
   s.summary      = "Berlin Artificial Intelligence"
   s.description  = "Berlin Artificial Intelligence"
   
-  s.add_dependency 'sinatra'
-  s.add_dependency 'yajl-ruby'
+  s.add_dependency 'sinatra', '>=1.2.6'
+  s.add_dependency 'yajl-ruby', '>=0.8.2'
   
   s.files = [
     'LICENSE',
