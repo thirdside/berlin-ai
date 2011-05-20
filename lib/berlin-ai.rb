@@ -1,9 +1,16 @@
+require 'sinatra'
+require 'yajl/json_gem'
+
 %w(game map node).each do |file|
   require File.expand_path( File.dirname( __FILE__ ) ) + "/ai/#{file}"
 end
 
+# Tell Sinatra to use ai file as root file
+set :app_file, $0
+
 post '/' do
   begin
+    # Check if it's one of the four Berlin keywords
     if ['ping', 'turn', 'game_start', 'game_over'].include? params[:action]
       game = Berlin::AI::Game.create_or_update params[:action], params[:infos], params[:map], params[:state]
 
