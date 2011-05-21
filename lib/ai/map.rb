@@ -18,7 +18,7 @@ module Berlin
         # the node and how many soldiers there is. We'll get back to that later.
         # json['nodes'] => [{:id => STRING}, ...]
         map['nodes'].each do |node|
-          @nodes[node['id']] = Berlin::AI::Node.new node['id']
+          @nodes[node['id']] = Berlin::AI::Node.new node, map['types'][node['type']]
         end
 
         # Same thing here, with paths.

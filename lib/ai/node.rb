@@ -4,10 +4,14 @@ module Berlin
     # We'll be able to use it in order to know if two
     # nodes are adjacent, how much points worth a node, etc.
     class Node
-      attr_accessor :id, :player_id, :number_of_soldiers
+      attr_accessor :id, :player_id, :number_of_soldiers, :type
+      attr_reader   :soldiers_per_turn, :points
 
-      def initialize id
-        @id                 = id
+      def initialize node, type_infos
+        @id                 = node['id']
+        @type               = node['type']
+        @points             = type_infos['points']
+        @soldiers_per_turn  = type_infos['number_of_soldiers']
         @number_of_soldiers = 0
         @player_id          = 0
         @links              = []

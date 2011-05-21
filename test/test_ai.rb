@@ -3,7 +3,7 @@ require 'berlin-ai'
 
 class Berlin::AI::Game
   def turn_moves
-    @map.controlled_nodes.map do |node|
+    @map.controlled_nodes.collect do |node|
       {
         :from => node.id,
         :to => node.adjacent_nodes.sample.id,
