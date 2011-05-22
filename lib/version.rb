@@ -2,7 +2,7 @@ module Berlin
   module AI
     MAJOR = 0
     MINOR = 0
-    BUILD = 7
+    BUILD = 8
 
     VERSION = "#{MAJOR}.#{MINOR}.#{BUILD}"
   end

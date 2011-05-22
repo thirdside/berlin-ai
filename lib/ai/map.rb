@@ -10,19 +10,25 @@ module Berlin
       def initialize map, infos
         @player_id  = infos['player_id']
         @nodes      = {}
+        @types      = {}
         @directed   = infos['directed'] || false
-
-        # Let's parse json['nodes'] and register all nodes we can find.
+        
+        # Node types
+        map['types'].each do |type|
+          @types[type['name']] = type
+        end
+        
+        # Let's parse map['nodes'] and register all nodes we can find.
         # We'll keep track of them in @nodes so we can find them later.
         # At this step (Map creation...), we still don't know who possess
         # the node and how many soldiers there is. We'll get back to that later.
-        # json['nodes'] => [{:id => STRING}, ...]
+        # map['nodes'] => [{:id => STRING}, ...]
         map['nodes'].each do |node|
-          @nodes[node['id']] = Berlin::AI::Node.new node, map['types'][node['type']]
+          @nodes[node['id']] = Berlin::AI::Node.new node, @types[node['type']]
         end
 
         # Same thing here, with paths.
-        # json['paths'] => [{:from => INTEGER, :to => INTEGER}, ...]
+        # map['paths'] => [{:from => INTEGER, :to => INTEGER}, ...]
         map['paths'].each do |path|
           @nodes[path['from']].link_to @nodes[path['to']]
 

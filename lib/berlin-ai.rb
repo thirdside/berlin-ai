@@ -25,6 +25,7 @@ post '/' do
     200
   rescue Exception => e
     p e.inspect
+    p e.backtrace
     
     # Internal server error
     500

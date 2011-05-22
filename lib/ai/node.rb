@@ -7,11 +7,11 @@ module Berlin
       attr_accessor :id, :player_id, :number_of_soldiers, :type
       attr_reader   :soldiers_per_turn, :points
 
-      def initialize node, type_infos
+      def initialize node, type
         @id                 = node['id']
         @type               = node['type']
-        @points             = type_infos['points']
-        @soldiers_per_turn  = type_infos['number_of_soldiers']
+        @points             = type['points']
+        @soldiers_per_turn  = type['number_of_soldiers']
         @number_of_soldiers = 0
         @player_id          = 0
         @links              = []
@@ -30,6 +30,11 @@ module Berlin
       # Returns true if self has more than zero soldier
       def occupied?
         @number_of_soldiers > 0
+      end
+      
+      # Returns true if node owned by provided player id
+      def owned_by? player_id
+        @player_id == player_id
       end
 
       # Returns a list of all adjacent nodes

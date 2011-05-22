@@ -2,7 +2,7 @@ module Berlin
   module AI
     # Game keeps track of current games played by the server, indexing them on their uniq id.
     class Game
-      attr_reader :id
+      attr_reader :id, :map
       
       # Keep track of all current games
       @@games = {}
@@ -16,10 +16,15 @@ module Berlin
         map    = JSON.parse( map )
         state  = JSON.parse( state )
 
-        # Then, let's see if we can find that game. If not, register it.
+        # Game id
         game_id = infos['game_id']
-        @@games[game_id] ||= Berlin::AI::Game.new game_id, map, infos
-        game = @@games[game_id]
+        
+        # Then, let's see if we can find that game. If not, register it.
+        if action == "ping"
+          game = Berlin::AI::Game.new game_id, map, infos
+        else
+          game = (@@games[game_id] ||= Berlin::AI::Game.new( game_id, map, infos ))
+        end
 
         if action == "game_over"
           # Release the game to avoid memory leaks
