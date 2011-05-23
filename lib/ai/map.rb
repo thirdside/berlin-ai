@@ -37,10 +37,10 @@ module Berlin
         end
       end
 
-      # By checking node.player_id, we are able to know if we own the node or not.
+      # Returns an array of all owned nodes
       def owned_nodes
         @nodes.select do |id, node|
-          node.player_id == player_id
+          node.owned_by? player_id
         end.values
       end
 
