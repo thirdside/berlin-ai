@@ -8,8 +8,17 @@ end
 
 # Parse options
 OptionParser.new do |opts|
-  opts.on("-p N", Integer, "Set running port to N") do |p|
+  opts.on("-p N", "--port=N", Integer, "Set running port to N") do |p|
     set :port, p
+  end
+
+  opts.on("--debug", "Run in debug mode (reloads code at each request)") do |p|
+    if p
+    require 'sinatra/reloader'
+      configure do |c|
+        c.also_reload $0
+      end
+    end
   end
 end.parse!
 

@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   
   s.add_dependency 'sinatra', '>=1.2.6'
   s.add_dependency 'yajl-ruby', '>=0.8.2'
+  s.add_dependency 'sinatra-reloader', '>=0.5.0'
   
   s.files = [
     'LICENSE',
