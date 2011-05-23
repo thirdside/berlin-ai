@@ -1,3 +1,4 @@
+require 'optparse'
 require 'sinatra'
 require 'yajl/json_gem'
 
@@ -5,7 +6,14 @@ require 'yajl/json_gem'
   require File.expand_path( File.dirname( __FILE__ ) ) + "/ai/#{file}"
 end
 
-# Tell Sinatra to use ai file as root file
+# Parse options
+OptionParser.new do |opts|
+  opts.on("-p N", Integer, "Set running port to N") do |p|
+    set :port, p
+  end
+end.parse!
+
+# Sinatra options
 set :app_file, $0
 
 post '/' do
