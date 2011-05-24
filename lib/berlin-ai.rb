@@ -2,6 +2,12 @@ require 'optparse'
 require 'sinatra'
 require 'yajl/json_gem'
 
+puts " __                  __ __             _______ _______ "
+puts "|  |--..-----..----.|  |__|.-----.    |   _   |_     _|"
+puts "|  _  ||  -__||   _||  |  ||     |    |       |_|   |_ "
+puts "|_____||_____||__|  |__|__||__|__|    |___|___|_______|"
+puts
+
 %w(game map node).each do |file|
   require File.expand_path( File.dirname( __FILE__ ) ) + "/ai/#{file}"
 end
