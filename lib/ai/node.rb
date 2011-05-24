@@ -11,10 +11,15 @@ module Berlin
         @id                 = node['id']
         @type               = node['type']
         @points             = type['points']
-        @soldiers_per_turn  = type['number_of_soldiers']
+        @soldiers_per_turn  = type['soldiers_per_turn']
         @number_of_soldiers = 0
         @player_id          = 0
         @links              = []
+      end
+      
+      # Somewhat useful
+      def to_i
+        @id.to_i
       end
 
       # Registers a given node as an adjacent one.
@@ -40,6 +45,11 @@ module Berlin
       # Returns a list of all adjacent nodes
       def adjacent_nodes
         @links.dup
+      end
+      
+      # Returns a list of all adjacent nodes, plus self
+      def adjacent_nodes_and_self
+        adjacent_nodes.push( self )
       end
     end
   end

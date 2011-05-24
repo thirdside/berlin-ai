@@ -11,10 +11,11 @@ OptionParser.new do |opts|
   opts.on("-p N", "--port=N", Integer, "Set running port to N") do |p|
     set :port, p
   end
-
-  opts.on("--debug", "Run in debug mode (reloads code at each request)") do |p|
-    if p
-    require 'sinatra/reloader'
+  
+  opts.on("--debug", "Run in debug mode (reloads code at each request)") do |d|
+    if d
+      require 'sinatra/reloader'
+      
       configure do |c|
         c.also_reload $0
       end
@@ -32,7 +33,11 @@ post '/' do
       game = Berlin::AI::Game.create_or_update params[:action], params[:infos], params[:map], params[:state]
 
       if ['ping', 'turn'].include? params[:action]
-        return game.turn_moves.to_json
+        # Let the player decides his moves
+        Berlin::AI::Player.on_turn( game )
+        
+        # Return the response to Berlin
+        return game.moves.to_json
       end
     else
       p params.inspect

@@ -4,9 +4,6 @@ module Berlin
     # nodes, points, soldiers, etc. Game will then be able to pick any information
     # it wants from map to decide what are the best moves to do.
     class Map
-      attr_accessor :nodes
-      attr_reader :player_id
-
       def initialize map, infos
         @player_id  = infos['player_id']
         @nodes      = {}
@@ -36,12 +33,17 @@ module Berlin
           @nodes[path['to']].link_to @nodes[path['from']] unless directed?
         end
       end
+      
+      # Returns an array of all nodes of the map
+      def nodes
+        @nodes.values
+      end
 
       # Returns an array of all owned nodes
       def owned_nodes
-        @nodes.select do |id, node|
+        nodes.select do |node|
           node.owned_by? player_id
-        end.values
+        end
       end
 
       # We can now loop on our owned nodes in order to find our controlled nodes.

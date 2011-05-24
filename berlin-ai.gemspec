@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
     'lib/ai/game.rb',
     'lib/ai/map.rb',
     'lib/ai/node.rb',
+    'lib/ai/player.rb',
     'test/test_ai.rb']
   
   s.require_paths = ['lib', 'test']

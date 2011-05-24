@@ -2,7 +2,7 @@ module Berlin
   module AI
     # Game keeps track of current games played by the server, indexing them on their uniq id.
     class Game
-      attr_reader :id, :map
+      attr_reader :id, :map, :moves, :player_id, :number_of_players, :time_limit_per_turn
       
       # Keep track of all current games
       @@games = {}
@@ -39,17 +39,25 @@ module Berlin
       
       def initialize id, map, infos
         @id  = id
+        
+        # Extract usefull informations
+        @player_id = infos['player_id']
+        @time_limit_per_turn = infos['time_limit_per_turn']
+        @number_of_players = infos['number_of_players']
+        
+        # Keep track of the player moves
+        @moves = []
+        
+        # Create the map
         @map = Berlin::AI::Map.new map, infos
+      end
+      
+      def add_move from, to, number_of_soldiers        
+        @moves << {:from=>from.to_i, :to=>to.to_i, :number_of_soldiers=>number_of_soldiers.to_i}
       end
 
       def update state
         @map.update state
-      end
-      
-      # This method must be overritten with yours. The return value of this method will be returned
-      # in a json format to Berlin and be interpreted as the moves you'd like to do.
-      def turn_moves
-        raise "Please... overwrite me!"
       end
     end
   end
