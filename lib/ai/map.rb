@@ -42,7 +42,7 @@ module Berlin
       # Returns an array of all owned nodes
       def owned_nodes
         nodes.select do |node|
-          node.owned_by? player_id
+          node.owned_by? @player_id
         end
       end
 
