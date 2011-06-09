@@ -16,8 +16,8 @@ module Berlin
         map    = JSON.parse( map )
         state  = JSON.parse( state )
 
-        # Game id
-        game_id = infos['game_id']
+        # Game id, set with player_id as well so an AI can fight with himself
+        game_id = "#{infos['game_id']}-#{infos['player_id']}"
         
         # Then, let's see if we can find that game. If not, register it.
         if action == "ping"
@@ -43,7 +43,12 @@ module Berlin
         # Extract usefull informations
         @player_id = infos['player_id']
         @time_limit_per_turn = infos['time_limit_per_turn']
+        @current_turn = infos['current_turn'].to_i
+        @maximum_number_of_turns = infos['maximum_number_of_turns'].to_i
         @number_of_players = infos['number_of_players']
+        
+        # How many turns left?
+        @turns_left = @maximum_number_of_turns - @current_turn
         
         # Keep track of the player moves
         @moves = []
