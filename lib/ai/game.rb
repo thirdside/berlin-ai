@@ -2,7 +2,7 @@ module Berlin
   module AI
     # Game keeps track of current games played by the server, indexing them on their uniq id.
     class Game
-      attr_reader :id, :map, :moves, :player_id, :number_of_players, :time_limit_per_turn
+      attr_reader :id, :map, :moves, :player_id, :current_turn, :number_of_players, :time_limit_per_turn
       
       # Keep track of all current games
       @@games = {}
@@ -18,6 +18,9 @@ module Berlin
 
         # Game id, set with player_id as well so an AI can fight with himself
         game_id = "#{infos['game_id']}-#{infos['player_id']}"
+        
+        # Keep track of the player moves
+        @moves = []
         
         # Then, let's see if we can find that game. If not, register it.
         if action == "ping"
@@ -49,9 +52,6 @@ module Berlin
         
         # How many turns left?
         @turns_left = @maximum_number_of_turns - @current_turn
-        
-        # Keep track of the player moves
-        @moves = []
         
         # Create the map
         @map = Berlin::AI::Map.new map, infos
