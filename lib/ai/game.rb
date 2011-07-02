@@ -19,9 +19,6 @@ module Berlin
         # Game id, set with player_id as well so an AI can fight with himself
         game_id = "#{infos['game_id']}-#{infos['player_id']}"
         
-        # Keep track of the player moves
-        @moves = []
-        
         # Then, let's see if we can find that game. If not, register it.
         if action == "ping"
           game = Berlin::AI::Game.new game_id, map, infos
@@ -63,6 +60,10 @@ module Berlin
 
       def update state
         @map.update state
+      end
+      
+      def clear_moves
+        @moves = []
       end
     end
   end

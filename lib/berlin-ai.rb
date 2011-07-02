@@ -56,6 +56,9 @@ post '/' do
       game = Berlin::AI::Game.create_or_update params[:action], params[:infos], params[:map], params[:state]
 
       if ['ping', 'turn'].include? params[:action]
+        # Clear old moves
+        game.clear_moves
+        
         # Let the player decides his moves
         Berlin::AI::Player.on_turn( game )
         

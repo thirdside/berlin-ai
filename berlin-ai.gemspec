@@ -2,7 +2,7 @@
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
  
-require 'lib/version'
+require './lib/version'
  
 Gem::Specification.new do |s|
   s.name         = "berlin-ai"
@@ -18,17 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'yajl-ruby', '>=0.8.2'
   s.add_dependency 'sinatra-reloader', '>=0.5.0'
   
-  s.files = [
-    'LICENSE',
-    'README',
-    'berlin-ai.gemspec',
-    'lib/berlin-ai.rb',
-    'lib/version.rb',
-    'lib/ai/game.rb',
-    'lib/ai/map.rb',
-    'lib/ai/node.rb',
-    'lib/ai/player.rb',
-    'test/test_ai.rb']
+  s.files = `git ls-files`.split("\n")
   
   s.require_paths = ['lib', 'test']
 end
