@@ -2,7 +2,7 @@ module Berlin
   module AI
     # Game keeps track of current games played by the server, indexing them on their uniq id.
     class Game
-      attr_reader :id, :map, :moves, :player_id, :current_turn, :number_of_players, :time_limit_per_turn
+      attr_reader :id, :map, :moves, :player_id, :current_turn, :number_of_players, :time_limit_per_turn, :maximum_number_of_turns, :turns_left
       
       # Keep track of all current games
       @@games = {}
