@@ -25,13 +25,13 @@ module Berlin
         else
           game = (@@games[game_id] ||= Berlin::AI::Game.new( game_id, map, infos ))
         end
-
+        
         if action == "game_over"
           # Release the game to avoid memory leaks
           @@games.delete game_id
-        elsif state
-          # Now, we want to update the current state of the game with the new content
-          game.update state
+        elsif infos && state
+          # Now, we want to update the current state of the game with the new content, as well as other infos
+          game.update infos, state
         end
 
         game
@@ -40,15 +40,11 @@ module Berlin
       def initialize id, map, infos
         @id  = id
         
-        # Extract usefull informations
-        @player_id = infos['player_id']
-        @time_limit_per_turn = infos['time_limit_per_turn']
-        @current_turn = infos['current_turn'].to_i
-        @maximum_number_of_turns = infos['maximum_number_of_turns'].to_i
-        @number_of_players = infos['number_of_players']
-        
-        # How many turns left?
-        @turns_left = @maximum_number_of_turns - @current_turn
+        # Extract usefull static informations
+        @player_id                = infos['player_id']
+        @time_limit_per_turn      = infos['time_limit_per_turn']
+        @maximum_number_of_turns  = infos['maximum_number_of_turns'].to_i
+        @number_of_players        = infos['number_of_players']
         
         # Create the map
         @map = Berlin::AI::Map.new map, infos
@@ -58,7 +54,12 @@ module Berlin
         @moves << {:from=>from.to_i, :to=>to.to_i, :number_of_soldiers=>number_of_soldiers.to_i}
       end
 
-      def update state
+      def update infos, state
+        # Update turn infos
+        @current_turn = infos['current_turn'].to_i
+        @turns_left   = @maximum_number_of_turns - @current_turn
+        
+        # Update map state
         @map.update state
       end
       
