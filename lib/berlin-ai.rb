@@ -13,10 +13,6 @@ puts
   require File.expand_path( File.dirname( __FILE__ ) ) + "/ai/#{file}"
 end
 
-# Sinatra options
-set :verbose, false
-set :logger, false
-
 # Parse options
 OptionParser.new do |opts|
   opts.on("-h", "--help", "Display this screen" ) do
