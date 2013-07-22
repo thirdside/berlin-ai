@@ -1,6 +1,6 @@
-require 'pry'
 require 'optparse'
 require 'sinatra'
+require 'logger'
 require 'yajl/json_gem'
 
 puts " __                  __ __             _______ _______ "
@@ -12,6 +12,9 @@ puts
 %w(game map node fake).each do |file|
   require File.expand_path( File.dirname( __FILE__ ) ) + "/ai/#{file}"
 end
+
+set :verbose, true
+set :logger, Logger.new('berlin.log')
 
 # Parse options
 OptionParser.new do |opts|
@@ -33,7 +36,6 @@ OptionParser.new do |opts|
   end
 
   opts.on("-l", "--log [LOGFILE]", "Create a log file for incoming requests (defaults to 'berlin.log')") do |l|
-    require 'logger'
 
     set :logger, Logger.new( l || 'berlin.log' )
   end
