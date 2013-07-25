@@ -112,7 +112,7 @@ module Berlin
 
       def initialize(state)
         js = state.as_json
-        @player_ids = js.map{ |n| n['player_id'] }.uniq.compact
+        @player_ids = js.map{ |n| n['player_id'] }.uniq.compact.sort
 
         js.each do |node|
           id = node['node_id'].to_s.rjust(2)
@@ -245,13 +245,19 @@ class Berlin::Fake::Game
   end
 
   def run
+    puts Berlin::Fake::Display.new(@state).as_display
+    pause
     while !@state.winner? && @turn < Berlin::Fake::GAME_INFO['maximum_number_of_turns']
       turn
-      puts "Press any key"
-      gets
+      pause
       puts Berlin::Fake::Display.new(@state).as_display
-      gets
+      pause
     end
+  end
+
+  def pause
+    puts "Press any key to continue"
+    gets
   end
 
   def turn
