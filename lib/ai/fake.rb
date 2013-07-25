@@ -1,3 +1,5 @@
+require 'rainbow'
+
 module Berlin
   module Fake
 
@@ -100,6 +102,57 @@ module Berlin
       end
     end
 
+    class Display
+
+      attr_accessor *(1..8).map{ |n| "n#{n}"}
+
+      COLORS = [:red, :green, :yellow, :blue]
+
+      Node = Struct.new(:id, :ns)
+
+      def initialize(state)
+        js = state.as_json
+        @player_ids = js.map{ |n| n['player_id'] }.uniq
+
+        js.each do |node|
+          id = node['node_id'].to_s.rjust(2)
+          ns = node['number_of_soldiers'].to_s.rjust(2).foreground(color(node['player_id']))
+
+          display_node = Display::Node.new(id, ns)
+          self.send("n#{node['node_id']}=", display_node)
+        end
+      end
+
+      def color(player_id)
+        player_id.nil? ? :white : COLORS[@player_ids.index(player_id)]
+      end
+
+      def as_display
+        ## The map is fully dynamic
+        <<-MAP
+         ____           ____           ____
+        /    \\         /    \\         /    \\
+        | #{n1.id} |---------| #{n2.id} |---------| #{n3.id} |
+        | #{n1.ns} |         | #{n2.ns} |         | #{n3.ns} |
+        \\____/         \\____/         \\____/
+          |                \\            |
+          |                 \\           |
+         _+__                \\         _+__
+        /    \\                \\       /    \\
+        | #{n4.id} |-----\\           \\------| #{n5.id} |
+        | #{n4.ns} |      \\                 | #{n5.ns} |
+        \\____/       \\                \\____/
+          |           \\                 |
+          |            \\                |
+         _+__           \\___           _+__
+        /    \\         /    \\         /    \\
+        | #{n6.id} |---------| #{n7.id} |---------| #{n8.id} |
+        | #{n6.ns} |         | #{n7.ns} |         | #{n8.ns} |
+        \\____/         \\____/         \\____/
+        MAP
+      end
+    end
+
     class State
       def initialize(from_json)
         @state = from_json.inject({}) do |h, node|
@@ -193,6 +246,8 @@ class Berlin::Fake::Game
     while !@state.winner? && @turn < Berlin::Fake::GAME_INFO['maximum_number_of_turns']
       turn
       puts "Press any key"
+      gets
+      puts Berlin::Fake::Display.new(@state).as_display
       gets
     end
   end
