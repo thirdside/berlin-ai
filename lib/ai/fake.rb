@@ -112,7 +112,7 @@ module Berlin
 
       def initialize(state)
         js = state.as_json
-        @player_ids = js.map{ |n| n['player_id'] }.uniq
+        @player_ids = js.map{ |n| n['player_id'] }.uniq.compact
 
         js.each do |node|
           id = node['node_id'].to_s.rjust(2)
@@ -129,7 +129,7 @@ module Berlin
 
       def as_display
         ## The map is fully dynamic
-        <<-MAP
+        map = <<-MAP
          ____           ____           ____
         /    \\         /    \\         /    \\
         | #{n1.id} |---------| #{n2.id} |---------| #{n3.id} |
@@ -150,6 +150,8 @@ module Berlin
         | #{n6.ns} |         | #{n7.ns} |         | #{n8.ns} |
         \\____/         \\____/         \\____/
         MAP
+
+        [map, *@player_ids.map{ |id| id.to_s.foreground(color(id)) }].join("\n")
       end
     end
 
