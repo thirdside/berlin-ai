@@ -14,7 +14,7 @@ puts
 end
 
 set :verbose, true
-set :logger, Logger.new('berlin.log')
+set :logger, Logger.new(STDOUT)
 
 # Parse options
 OptionParser.new do |opts|
