@@ -95,7 +95,7 @@ module Berlin
 
           node.adjacent_nodes.each do |adj|
             num = rand(0...soldiers)
-            game.add_move(node.id, adj.id, num)
+            game.add_move(node, adj, num)
             soldiers -= num
           end
         end
@@ -294,13 +294,13 @@ class Berlin::Fake::Game
     info = {'current_turn' => @turn}
 
     @ai_games.each do |game|
-      game.clear_moves
+      game.reset!
       game.update(info, @state.as_json)
       Berlin::Fake::Random.on_turn(game)
     end
 
     @player_game.update(info, @state.as_json)
-    @player_game.clear_moves
+    @player_game.reset!
     Berlin::AI::Player.on_turn(@player_game)
   end
 end
