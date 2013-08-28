@@ -4,7 +4,7 @@ module Berlin
     # We'll be able to use it in order to know if two
     # nodes are adjacent, how much points worth a node, etc.
     class Node
-      attr_accessor :id, :player_id, :number_of_soldiers, :type
+      attr_accessor :id, :player_id, :number_of_soldiers, :incoming_soldiers, :available_soldiers, :type
       attr_reader   :soldiers_per_turn, :points
 
       def initialize node, type
@@ -15,6 +15,12 @@ module Berlin
         @number_of_soldiers = 0
         @player_id          = nil
         @links              = []
+      end
+
+      # Reset information for new turn
+      def reset!
+        self.incoming_soldiers  = 0
+        self.available_soldiers = self.number_of_soldiers
       end
       
       # Somewhat useful

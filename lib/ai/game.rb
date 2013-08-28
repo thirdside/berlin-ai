@@ -51,7 +51,14 @@ module Berlin
       end
       
       def add_move from, to, number_of_soldiers        
-        @moves << {:from=>from.to_i, :to=>to.to_i, :number_of_soldiers=>number_of_soldiers.to_i}
+         # remove moving soldiers from from node
+        from.available_soldiers -= number_of_soldiers
+
+        # adding incoming soldiers to next node
+        to.incoming_soldiers += number_of_soldiers
+
+        # add move
+        @moves << {:from => from.to_i, :to => to.to_i, :number_of_soldiers => number_of_soldiers.to_i}
       end
 
       def update infos, state
@@ -63,8 +70,9 @@ module Berlin
         @map.update state
       end
       
-      def clear_moves
+      def reset!
         @moves = []
+        @map.nodes.each(&:reset!)
       end
     end
   end

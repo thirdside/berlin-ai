@@ -65,7 +65,7 @@ post '/' do
 
       if ['ping', 'turn'].include?(params[:action])
         # Clear old moves
-        game.clear_moves
+        game.reset!
 
         # Let the player decides his moves
         Berlin::AI::Player.on_turn(game)
