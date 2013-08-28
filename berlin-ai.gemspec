@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.platform     = Gem::Platform::RUBY
   s.authors      = ["Christian Blais", "Guillaume Malette", "Jodi Giordano"]
   s.email        = ["christ.blais@gmail.com", "gmalette@gmail.com", "giordano.jodi@gmail.com"]
-  s.homepage     = "http://github.com/christianblais/berlin-ai"
+  s.homepage     = "http://github.com/thirdside/berlin-ai"
   s.summary      = "Berlin Artificial Intelligence"
   s.description  = "Berlin Artificial Intelligence"
 
