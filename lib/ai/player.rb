@@ -2,7 +2,7 @@ module Berlin
   module AI
     class Player
       def self.on_turn
-        raise "Overwrite me."
+        raise NotImplementedError
       end
     end
   end
