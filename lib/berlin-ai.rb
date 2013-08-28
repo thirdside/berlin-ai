@@ -10,7 +10,7 @@ puts "|_____||_____||__|  |__|__||__|__|    |___|___|_______|"
 puts
 
 %w(game map node fake).each do |file|
-  require File.expand_path( File.dirname( __FILE__ ) ) + "/ai/#{file}"
+  require File.expand_path(File.dirname( __FILE__ )) + "/ai/#{file}"
 end
 
 set :verbose, true
@@ -36,8 +36,7 @@ OptionParser.new do |opts|
   end
 
   opts.on("-l", "--log [LOGFILE]", "Create a log file for incoming requests (defaults to 'berlin.log')") do |l|
-
-    set :logger, Logger.new( l || 'berlin.log' )
+    set :logger, Logger.new(l || 'berlin.log')
   end
 
   opts.on("-t N", "--test N", Integer, "Test against N random AI") do |t|
@@ -56,17 +55,17 @@ end.parse!
 post '/' do
   begin
     # Check if it's one of the four Berlin keywords
-    if ['ping', 'turn', 'game_start', 'game_over'].include? params[:action]
+    if ['ping', 'turn', 'game_start', 'game_over'].include?(params[:action])
       log :info, "New request of type #{params[:action]} : #{params.inspect}"
 
-      game = Berlin::AI::Game.create_or_update params[:action], params[:infos], params[:map], params[:state]
+      game = Berlin::AI::Game.create_or_update(params[:action], params[:infos], params[:map], params[:state])
 
-      if ['ping', 'turn'].include? params[:action]
+      if ['ping', 'turn'].include?(params[:action])
         # Clear old moves
         game.clear_moves
 
         # Let the player decides his moves
-        Berlin::AI::Player.on_turn( game )
+        Berlin::AI::Player.on_turn(game)
 
         # Get moves from AI
         moves = game.moves.to_json
@@ -96,13 +95,11 @@ def log level, message
   puts message if settings.verbose
 
   # logger
-  settings.logger.send( level, message ) if settings.logger
+  settings.logger.send(level, message) if settings.logger
 end
 
 if $test_ais
-  at_exit {
-    Berlin::Fake::Game.new($test_ais).run
-  }
+  at_exit { Berlin::Fake::Game.new($test_ais).run }
 else
   set :app_file, $0
 end
