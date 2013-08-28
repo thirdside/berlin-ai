@@ -42,7 +42,28 @@ module Berlin
       # Returns an array of all owned nodes
       def owned_nodes
         nodes.select do |node|
-          node.owned_by? @player_id
+          node.owned_by?(@player_id)
+        end
+      end
+
+      # Returns an array of all enemy nodes
+      def enemy_nodes
+        nodes.select do |node|
+          node.owned? && !owned_by?(@player_id)
+        end
+      end
+
+      # Returns an array of all free nodes
+      def free_nodes
+        nodes.select do |node|
+          node.free?
+        end
+      end
+
+      # Returns an array of all nodes that we don't owned
+      def foreign_nodes
+        nodes.reject do |node|
+          node.owned_by?(@player_id)
         end
       end
 

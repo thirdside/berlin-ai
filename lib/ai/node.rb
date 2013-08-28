@@ -13,7 +13,7 @@ module Berlin
         @points             = type['points']
         @soldiers_per_turn  = type['soldiers_per_turn']
         @number_of_soldiers = 0
-        @player_id          = 0
+        @player_id          = nil
         @links              = []
       end
       
@@ -22,13 +22,18 @@ module Berlin
         @id.to_i
       end
 
+      # Used to compare if two nodes are the same
+      def ==(other)
+        other.id == @id
+      end
+
       # Registers a given node as an adjacent one.
-      def link_to other_node
+      def link_to(other_node)
         @links << other_node
       end
 
       # Returns true if other_node is adjacent to self
-      def adjacent? other_node
+      def adjacent?(other_node)
         @links.include? other_node
       end
       
@@ -36,9 +41,19 @@ module Berlin
       def occupied?
         @number_of_soldiers > 0
       end
+
+      # Returns true if owned by any player
+      def owned?
+        !!@player_id
+      end
+
+      # Returns true if no one on the node
+      def free?
+        !owned?
+      end
       
       # Returns true if node owned by provided player id
-      def owned_by? player_id
+      def owned_by?(player_id)
         @player_id == player_id
       end
 
