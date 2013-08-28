@@ -16,6 +16,9 @@ end
 set :verbose, true
 set :logger, Logger.new(STDOUT)
 
+# set tests to false
+$test_ais = false
+
 # Parse options
 OptionParser.new do |opts|
   opts.on("-h", "--help", "Display this screen" ) do
