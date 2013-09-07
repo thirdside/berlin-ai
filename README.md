@@ -6,7 +6,7 @@ Berlin-Ai is a gem to quickly rampup on the [Berlin](http://www.berlin-ai.com) g
 
 To create you AI, simply extend `Berlin::AI::Player` and implement the `self.on_turn` method.
 
-```
+```ruby
 class Berlin::AI::Player
   def on_turn(game)
     # Do the magic here
