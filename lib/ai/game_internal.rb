@@ -4,11 +4,11 @@ module Berlin
       module Internal
         # Keep track of all current games
         @@games = {}
-        
+
         def self.create_or_update(action, infos, map, state)
           # Check for params and quit on errors
           return if action.nil? || infos.nil? || map.nil? || state.nil?
-          
+
           # First, we parse the received request
           infos  = JSON.parse( infos )
           map    = JSON.parse( map )
@@ -16,12 +16,12 @@ module Berlin
 
           # Game id, set with player_id as well so an AI can fight with himself
           game_id = "#{infos['game_id']}-#{infos['player_id']}"
-          
+
           # Then, let's see if we can find that game. If not, register it.
           game = @@games[game_id] ||= begin
             game                          = Berlin::AI::Game.new
             game.id                       = game_id
-            game.map                      = Berlin::AI::Map.parse(map.merge!(infos.select{ |k,v| ['directed', 'player_id'].include?(k) }))
+            game.map                      = Berlin::AI::Map::Internal.parse(map.merge!(infos.select{ |k,v| ['directed', 'player_id'].include?(k) }))
             game.player_id                = infos['player_id']
             game.time_limit_per_turn      = infos['time_limit_per_turn']
             game.maximum_number_of_turns  = infos['maximum_number_of_turns']
@@ -44,11 +44,11 @@ module Berlin
           # Update turn infos
           @current_turn = current_turn.to_i
           @turns_left   = @maximum_number_of_turns - @current_turn
-          
+
           # Update map state
           @map.update(state)
         end
-        
+
         def reset!
           @moves = []
           @map.nodes.each(&:reset!)

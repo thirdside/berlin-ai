@@ -7,11 +7,11 @@ module Berlin
       include Internal
 
       attr_accessor :player_id, :nodes, :directed
-      
+
       # Returns an array of all nodes of the map
-      def nodes
-        @nodes.values
-      end
+      # def nodes
+      #   @nodes.values
+      # end
 
       # Returns an array of all owned nodes
       def owned_nodes
