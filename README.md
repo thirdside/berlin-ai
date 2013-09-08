@@ -24,7 +24,7 @@ class Berlin::AI::Player
 end
 ```
 
-Your now ready to host your AI locally or with [Heroku](https://devcenter.heroku.com/articles/rack). We use [Sinatra](http://www.sinatrarb.com) in this gem, so a simple `ruby your_ai_file.rb` will launch the web server.
+You're now ready to host your AI locally or with [Heroku](https://devcenter.heroku.com/articles/rack). We use [Sinatra](http://www.sinatrarb.com) in this gem, so a simple `ruby your_ai_file.rb` will launch the web server.
 
 To modify some defaults, you can execute `ruby your_ai_file.rb -h` for a list of available options.
 
