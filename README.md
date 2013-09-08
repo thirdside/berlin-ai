@@ -77,7 +77,7 @@ Node objects obtained when querying the map.
 
 ```ruby
 node.id                       # Id of the node.
-node.type                     # Type of node. [city | normal]
+node.type                     # Type of node.
 node.player_id                # Owner of the node.
 node.number_of_soldiers       # Number of soldiers on the node.
 node.incoming_soldiers        # Owned soldiers coming to this node (result from add_move calls).
