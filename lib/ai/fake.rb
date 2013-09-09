@@ -4,6 +4,8 @@ module Berlin
   module Fake
 
     MAP_DEFINITION = {
+      "directed" => false,
+
       "types" => [
         {"name" => "node", "points" => 0, "soldiers_per_turn" => 0},
         {"name" => "city", "points" => 1, "soldiers_per_turn" => 1}
@@ -228,7 +230,14 @@ class Berlin::Fake::Game
       ai_info['player_id']  = ai_name
       ai_info['game_id']    = n
 
-      Berlin::AI::Game.new(ai_info['game_id'], Berlin::Fake::MAP_DEFINITION, ai_info)
+      ai_game = Berlin::AI::Game.new
+      ai_game.id                       = ai_info['game_id']
+      ai_game.map                      = Berlin::AI::Map.parse(Berlin::Fake::MAP_DEFINITION.merge('player_id' => ai_info['player_id']))
+      ai_game.player_id                = ai_info['player_id']
+      ai_game.time_limit_per_turn      = ai_info['time_limit_per_turn']
+      ai_game.maximum_number_of_turns  = ai_info['maximum_number_of_turns']
+      ai_game.number_of_players        = ai_info['number_of_players']
+      ai_game
     end
 
     player_name = "Player"
@@ -239,7 +248,13 @@ class Berlin::Fake::Game
     node['player_id'] = player_name
     node['number_of_soldiers'] = 5
 
-    @player_game = Berlin::AI::Game.new(player_info['game_id'], Berlin::Fake::MAP_DEFINITION, player_info)
+    @player_game = Berlin::AI::Game.new
+    @player_game.id                       = player_info['game_id']
+    @player_game.map                      = Berlin::AI::Map.parse(Berlin::Fake::MAP_DEFINITION.merge('player_id' => player_info['player_id']))
+    @player_game.player_id                = player_info['player_id']
+    @player_game.time_limit_per_turn      = player_info['time_limit_per_turn']
+    @player_game.maximum_number_of_turns  = player_info['maximum_number_of_turns']
+    @player_game.number_of_players        = player_info['number_of_players']
 
     @state = Berlin::Fake::State.new(Berlin::Fake::GAME_STATE.dup)
   end
@@ -291,15 +306,13 @@ class Berlin::Fake::Game
   end
 
   def generate_moves
-    info = {'current_turn' => @turn}
-
     @ai_games.each do |game|
       game.reset!
-      game.update(info, @state.as_json)
+      game.update(@turn, @state.as_json)
       Berlin::Fake::Random.on_turn(game)
     end
 
-    @player_game.update(info, @state.as_json)
+    @player_game.update(@turn, @state.as_json)
     @player_game.reset!
     Berlin::AI::Player.on_turn(@player_game)
   end

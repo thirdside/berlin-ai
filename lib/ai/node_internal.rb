@@ -30,7 +30,7 @@ module Berlin
         end
 
         def to_s
-          "<Berlin::AI::Node @id=#{@id} @type=#{@type} @points=#{@points} @soldiers_per_turn=#{@soldiers_per_turn} @adjacent_nodes=#{@adjacent_nodes.map(&:id)}>"
+          "<Berlin::AI::Node @id=#{@id} @type=#{@type} @points=#{@points} @soldiers_per_turn=#{@soldiers_per_turn} @adjacent_nodes=#{adjacent_nodes.map(&:id)}>"
         end
 
         # Reset information for new turn
