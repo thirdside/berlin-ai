@@ -4,7 +4,6 @@ require_relative '../lib/ai/node'
 require_relative '../lib/ai/map_internal'
 require_relative '../lib/ai/map'
 
-require 'pry'
 require "test/unit"
  
 class MapTest < Test::Unit::TestCase
