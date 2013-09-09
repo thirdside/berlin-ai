@@ -4,7 +4,7 @@ module Berlin
     class Game
       include Internal
 
-      attr_reader :id, :map, :moves, :player_id, :current_turn, :number_of_players,
+      attr_accessor :id, :map, :moves, :player_id, :current_turn, :number_of_players,
                   :time_limit_per_turn, :maximum_number_of_turns, :turns_left
       
       def add_move(from, to, number_of_soldiers)     

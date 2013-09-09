@@ -2,6 +2,23 @@ module Berlin
   module AI
     class Node
       module Internal
+        module ClassMethods
+          def parse(data)
+            node = Node.new
+
+            node.id                 = data['id']
+            node.type               = data['type']
+            node.points             = data['points']
+            node.soldiers_per_turn  = data['soldiers_per_turn']
+
+            node
+          end
+        end
+
+        def self.included(base)
+          base.extend(ClassMethods)
+        end
+
         def initialize(options={})
           @number_of_soldiers = 0
           @player_id          = nil
@@ -12,15 +29,8 @@ module Berlin
           end
         end
 
-        def self.parse(data)
-          node = Node.new
-
-          node.id                 = data['id']
-          node.type               = data['type']
-          node.points             = data['points']
-          node.soldiers_per_turn  = data['soldiers_per_turn']
-
-          node
+        def to_s
+          "<Berlin::AI::Node @id=#{@id} @type=#{@type} @points=#{@points} @soldiers_per_turn=#{@soldiers_per_turn} @adjacent_nodes=#{@adjacent_nodes.map(&:id)}>"
         end
 
         # Reset information for new turn

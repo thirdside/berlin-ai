@@ -6,11 +6,11 @@ module Berlin
     class Map
       include Internal
 
-      attr_accessor :player_id, :nodes, :directed
+      attr_accessor :player_id, :nodes_hash, :directed
       
       # Returns an array of all nodes of the map
       def nodes
-        @nodes.values
+        @nodes_hash.values
       end
 
       # Returns an array of all owned nodes
