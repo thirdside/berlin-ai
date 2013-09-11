@@ -85,7 +85,7 @@ node.available_soldiers       # Owned remaining soldiers on this node (result fr
 node.==(other)                # Check if two nodes are the same.
 node.adjacent?(other_node)    # Check if two nodes are adjacents.
 node.occupied?                # Check if some soldiers are on the node.
-node.owned?                   # Check if you own the node.
+node.owned?                   # Check if owned by a player
 node.free?                    # Check if no one own the node.
 node.owned_by?(player_id)     # Check if the node is owned by a given player.
 node.adjacent_nodes           # Get a list of adjacent nodes.
