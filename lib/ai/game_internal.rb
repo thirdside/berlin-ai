@@ -22,7 +22,7 @@ module Berlin
             game = @@games[game_id] ||= begin
               game                          = Berlin::AI::Game.new
               game.id                       = game_id
-              game.map                      = Berlin::AI::Map.parse(map.merge!(infos.select{ |k,v| ['directed', 'player_id'].include?(k) }))
+              game.map                      = Berlin::AI::Map.parse(map.merge(infos.select{ |k,v| ['directed', 'player_id'].include?(k) }))
               game.player_id                = infos['player_id']
               game.time_limit_per_turn      = infos['time_limit_per_turn']
               game.maximum_number_of_turns  = infos['maximum_number_of_turns']

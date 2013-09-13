@@ -29,8 +29,10 @@ module Berlin
           end
         end
 
-        def to_s
-          "<Berlin::AI::Node @id=#{@id} @type=#{@type} @points=#{@points} @soldiers_per_turn=#{@soldiers_per_turn} @adjacent_nodes=#{adjacent_nodes.map(&:id)}>"
+        def to_s(options={})
+          str = "<Berlin::AI::Node @id=#{@id} @player_id='#{@player_id}' @type='#{@type}' @points=#{@points} @soldiers_per_turn=#{@soldiers_per_turn} @number_of_soldiers=#{@number_of_soldiers} @incoming_soldiers=#{@incoming_soldiers} @available_soldiers=#{@available_soldiers} @adjacent_nodes=#{adjacent_nodes.map(&:id)}"
+          options.each { |key, val| str << " @#{key}=#{val}"}
+          str << ">"
         end
 
         # Reset information for new turn
