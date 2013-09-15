@@ -1,4 +1,6 @@
+require 'pry'
 require 'rainbow'
+require 'terminfo'
 
 module Berlin
   module Fake
@@ -10,14 +12,14 @@ module Berlin
       ],
 
       "nodes" => [
-        {"id" => 1, "type" => "city"},
-        {"id" => 2, "type" => "node"},
-        {"id" => 3, "type" => "city"},
-        {"id" => 4, "type" => "node"},
-        {"id" => 5, "type" => "node"},
-        {"id" => 6, "type" => "city"},
-        {"id" => 7, "type" => "node"},
-        {"id" => 8, "type" => "city"}
+        {"id" => 1, "type" => "city", "x" => 10, "y" => 10},
+        {"id" => 2, "type" => "node", "x" => 50, "y" => 10},
+        {"id" => 3, "type" => "city", "x" => 90, "y" => 10},
+        {"id" => 4, "type" => "node", "x" => 10, "y" => 50},
+        {"id" => 5, "type" => "node", "x" => 90, "y" => 50},
+        {"id" => 6, "type" => "city", "x" => 10, "y" => 90},
+        {"id" => 7, "type" => "node", "x" => 50, "y" => 90},
+        {"id" => 8, "type" => "city", "x" => 90, "y" => 90}
       ],
 
       "paths" => [
@@ -104,23 +106,17 @@ module Berlin
 
     class Display
 
-      attr_accessor *(1..8).map{ |n| "n#{n}"}
-
       COLORS = [:red, :green, :yellow, :blue]
 
-      Node = Struct.new(:id, :ns)
+      Position = Struct.new(:x, :y)
 
-      def initialize(state)
-        js = state.as_json
-        @player_ids = js.map{ |n| n['player_id'] }.uniq.compact.sort
+      def initialize(map_definition, state)
+        @map_definition = map_definition
+        @state = state.state
+        @player_ids = @state.map{ |id, n| n['player_id'] }.uniq.compact.sort
 
-        js.each do |node|
-          id = node['node_id'].to_s.rjust(2)
-          ns = node['number_of_soldiers'].to_s.rjust(2).foreground(color(node['player_id']))
-
-          display_node = Display::Node.new(id, ns)
-          self.send("n#{node['node_id']}=", display_node)
-        end
+        @height, @width = TermInfo.screen_size
+        @map = 1.upto(@height).map { [" "] * @width }
       end
 
       def color(player_id)
@@ -128,34 +124,95 @@ module Berlin
       end
 
       def as_display
-        ## The map is fully dynamic
-        map = <<-MAP
-         ____           ____           ____
-        /    \\         /    \\         /    \\
-        | #{n1.id} |---------| #{n2.id} |---------| #{n3.id} |
-        | #{n1.ns} |         | #{n2.ns} |         | #{n3.ns} |
-        \\____/         \\____/         \\____/
-          |                \\            |
-          |                 \\           |
-         _+__                \\         _+__
-        /    \\                \\       /    \\
-        | #{n4.id} |-----\\           \\------| #{n5.id} |
-        | #{n4.ns} |      \\                 | #{n5.ns} |
-        \\____/       \\                \\____/
-          |           \\                 |
-          |            \\                |
-         _+__           \\___           _+__
-        /    \\         /    \\         /    \\
-        | #{n6.id} |---------| #{n7.id} |---------| #{n8.id} |
-        | #{n6.ns} |         | #{n7.ns} |         | #{n8.ns} |
-        \\____/         \\____/         \\____/
-        MAP
+        paths_as_display
+        nodes_as_display
+        @map.map{ |a| a.join '' }.join("\n")
+      end
 
-        [map, *@player_ids.map{ |id| id.to_s.foreground(color(id)) }].join("\n")
+      def paths_as_display
+        #  [{"from"=>1, "to"=>2},
+        # {"from"=>2, "to"=>3},
+        # {"from"=>2, "to"=>5},
+        # {"from"=>3, "to"=>5},
+        # {"from"=>5, "to"=>8},
+        # {"from"=>8, "to"=>7},
+        # {"from"=>7, "to"=>4},
+        # {"from"=>6, "to"=>7},
+        # {"from"=>6, "to"=>4},
+        # {"from"=>4, "to"=>1}]}
+        @map_definition['paths'].each do |path|
+          from_node = @map_definition['nodes'][path['from']-1]
+          to_node = @map_definition['nodes'][path['to']-1]
+
+          from = node_position(from_node)
+          to = node_position(to_node)
+
+          draw_line(from, to)
+        end
+      end
+
+      def draw_line(from, to)
+        xs = range(from[0], to[0]).to_a
+        ys = range(from[1], to[1]).to_a
+
+        length = [xs.length, ys.length].max
+
+        (0...length).each do |n|
+          begin
+            x = xs[(n.to_f/length * xs.length).floor]
+            y = ys[(n.to_f/length * ys.length).floor]
+
+            replace(x, y, "+")
+          rescue => e
+            binding.pry
+          end
+        end
+      end
+
+      def range(from, to)
+        from > to ? (to..from) : (from..to)
+      end
+
+      def node_position(node)
+        x = (node['x'] / 100.0 * @width).to_i
+        y = (node['y'] / 100.0 * @height).to_i
+        [x, y]
+      end
+
+      def nodes_as_display
+        # 12###
+        # # 12#
+        # 1###1
+        @map_definition['nodes'].each do |node|
+          node_state = @state[node['id']]
+
+          x, y = node_position(node)
+
+          player_color = color(node_state.player_id)
+
+          (-1..1).each do |n|
+            replace(x-2, y+n, "#"*5, player_color)
+          end
+
+          replace(x-2, y-1, node['id'])
+          number_of_soldiers = node_state.number_of_soldiers.to_s.center(3)
+          replace(x-1, y, number_of_soldiers, player_color)
+          # replace(x+1, y+1, 0)
+        end
+      end
+
+      def replace(x, y, str, foreground = nil)
+        length = str.to_s.size
+        puts "replacing #{x}, #{y} with #{str}"
+        (0...length).each do |n|
+          char = str.to_s[n]
+          @map[y][x+n] = foreground ? char.foreground(foreground) : char
+        end
       end
     end
 
     class State
+      attr_accessor :state
       def initialize(from_json)
         @state = from_json.inject({}) do |h, node|
           h[node['node_id']] = NodeState.new(node['node_id'], node['player_id'], node['number_of_soldiers'])
@@ -245,12 +302,12 @@ class Berlin::Fake::Game
   end
 
   def run
-    puts Berlin::Fake::Display.new(@state).as_display
+    puts Berlin::Fake::Display.new(Berlin::Fake::MAP_DEFINITION, @state).as_display
     pause
     while !@state.winner? && @turn < Berlin::Fake::GAME_INFO['maximum_number_of_turns']
       turn
       pause
-      puts Berlin::Fake::Display.new(@state).as_display
+      puts Berlin::Fake::Display.new(Berlin::Fake::MAP_DEFINITION, @state).as_display
       pause
     end
   end
