@@ -1,0 +1,9 @@
+source 'https://rubygems.org'
+ruby "1.9.3"
+
+gem 'berlin-ai', '<%= Berlin::AI::VERSION %>'
+gem 'thin'
+
+group :development do
+  gem 'shotgun'
+end
