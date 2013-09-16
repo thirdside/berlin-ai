@@ -64,7 +64,7 @@ Helper methods to work with nodes.
 ```ruby
 map.directed?          # Determine if a path from A to B is A -> B (directed) or A <-> B (not directed)
 map.nodes              # All the nodes.
-map.owned_nodes        # Owned nodes, including those with 0 soldiers.
+map.owned_nodes        # Your nodes, including those with 0 soldiers.
 map.enemy_nodes        # Enemy nodes.
 map.free_nodes         # Nodes not controlled by anyone.
 map.foreign_nodes      # Nodes not owned (i.e. enemy nodes and free nodes).
@@ -77,6 +77,7 @@ Node objects obtained when querying the map.
 
 ```ruby
 node.id                       # Id of the node.
+node.map                      # The map to which the node belongs to
 node.type                     # Type of node.
 node.player_id                # Owner of the node.
 node.number_of_soldiers       # Number of soldiers on the node.
@@ -85,7 +86,8 @@ node.available_soldiers       # Owned remaining soldiers on this node (result fr
 node.==(other)                # Check if two nodes are the same.
 node.adjacent?(other_node)    # Check if two nodes are adjacents.
 node.occupied?                # Check if some soldiers are on the node.
-node.owned?                   # Check if a player owns the node.
+node.owned?                   # Check if a player (not only you) owns the node.
+node.mine?                    # Check if you own the node.
 node.free?                    # Check if no one own the node.
 node.owned_by?(player_id)     # Check if the node is owned by a given player.
 node.adjacent_nodes           # Get a list of adjacent nodes.
