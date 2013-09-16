@@ -6,12 +6,12 @@ module Berlin
     class Node
       include Internal
 
-      attr_accessor :id, :player_id, :number_of_soldiers, :incoming_soldiers,
+      attr_accessor :id, :map, :player_id, :number_of_soldiers, :incoming_soldiers,
                     :available_soldiers, :type, :soldiers_per_turn, :points
 
       # Returns true if other_node is adjacent to self
       def adjacent?(other_node)
-        @links.include? other_node
+        @links.include?(other_node)
       end
       
       # Returns true if self has more than zero soldier
@@ -22,6 +22,16 @@ module Berlin
       # Returns true if owned by any player
       def owned?
         !!@player_id
+      end
+
+      # Returns true if yours
+      def mine?
+        owned_by?(@map.player_id)
+      end
+
+      # Returns true if owned by somebody else than you
+      def enemy?
+        owned? && !mine?
       end
 
       # Returns true if no one on the node
@@ -41,7 +51,7 @@ module Berlin
       
       # Returns a list of all adjacent nodes, plus self
       def adjacent_nodes_and_self
-        adjacent_nodes.push( self )
+        adjacent_nodes.push(self)
       end
     end
   end

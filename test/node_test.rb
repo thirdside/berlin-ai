@@ -18,7 +18,9 @@ class NodeTest < Test::Unit::TestCase
 
   def test_reset_resets_all_turn_relative_data
     node = Berlin::AI::Node.new(:number_of_soldiers => 2, :incoming_soldiers => 3, :available_soldiers => 4)
+    
     node.reset!
+    
     assert_equal 0, node.incoming_soldiers
     assert_equal node.number_of_soldiers, node.available_soldiers
   end
@@ -34,7 +36,7 @@ class NodeTest < Test::Unit::TestCase
     assert !node1.adjacent?(node3)
   end
 
-  def test_occupied_returns_true_if_the_node_has_at_least_one_soldiers
+  def test_occupied_returns_true_if_the_node_has_at_least_one_soldier
     node = Berlin::AI::Node.new
 
     assert !node.occupied?
@@ -72,6 +74,19 @@ class NodeTest < Test::Unit::TestCase
     node.player_id = 1
 
     assert node.owned?
+  end
+
+  def test_mine_returns_true_if_owned_by_current_player
+    Struct.new('Map', :player_id)
+    node = Berlin::AI::Node.new
+
+    node.map = Struct::Map.new(1)
+
+    assert !node.mine?
+
+    node.player_id = 1
+    
+    assert node.mine?
   end
  
 end
