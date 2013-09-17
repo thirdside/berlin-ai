@@ -30,7 +30,7 @@ module Berlin
 
       # Returns an array of all nodes that we don't owned
       def foreign_nodes
-        nodes.reject{ |n| n.mine? }
+        nodes.select{ |n| n.foreign? }
       end
 
       # We can now loop on our owned nodes in order to find our controlled nodes.

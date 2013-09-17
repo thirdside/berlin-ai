@@ -2,6 +2,10 @@
 
 Berlin-Ai is a gem to quickly ramp up on the [Berlin](http://www.berlin-ai.com) game.
 
+## Changelog
+
+[See changelog for recent changes](https://github.com/thirdside/berlin-ai/blob/master/LICENSE)
+
 ## Usage
 
 Create your AI in a simple `.rb` file:
