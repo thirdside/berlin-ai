@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+require 'erb'
+require 'optparse'
+
+options = {}
+parser = OptionParser.new do |opts|
+  opts.banner = 'Usage: berlin-ai [options]'
+
+  opts.on("--init=NAME") do |name|
+   options[:name] = name
+  end
+end.parse!
+
+require File.expand_path('../../lib/version', __FILE__)
+
+name = options[:name]
+
+Dir.mkdir name
+
+%w(Gemfile config.ru ai.rb).each do |file|
+  path = File.expand_path("../../data/#{file}", __FILE__)
+  template = ERB.new(File.read(path))
+
+  File.open(File.expand_path("./#{name}/#{file}"), "w") do |f|
+    f.puts template.result
+  end
+end
+
