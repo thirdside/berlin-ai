@@ -6,10 +6,11 @@ module Berlin
           def parse(data)
             node = Node.new
 
-            node.id                 = data['id']
-            node.type               = data['type']
-            node.points             = data['points']
-            node.soldiers_per_turn  = data['soldiers_per_turn']
+            node.id                 = data.fetch('id')
+            node.map                = data.fetch('map')
+            node.type               = data.fetch('type')
+            node.points             = data.fetch('points')
+            node.soldiers_per_turn  = data.fetch('soldiers_per_turn')
 
             node
           end
