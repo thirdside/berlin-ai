@@ -16,6 +16,8 @@ require File.expand_path('../../lib/version', __FILE__)
 
 name = options[:name]
 
+exit(1) unless name
+
 Dir.mkdir name
 
 %w(Gemfile config.ru ai.rb).each do |file|
