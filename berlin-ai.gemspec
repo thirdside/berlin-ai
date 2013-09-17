@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.authors      = ["Christian Blais", "Guillaume Malette", "Jodi Giordano"]
   s.email        = ["christ.blais@gmail.com", "gmalette@gmail.com", "giordano.jodi@gmail.com"]
   s.homepage     = "http://github.com/thirdside/berlin-ai"
+  s.executables  = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.summary      = "Berlin Artificial Intelligence"
   s.description  = "Berlin Artificial Intelligence"
 
