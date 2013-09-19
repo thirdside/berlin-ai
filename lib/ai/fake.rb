@@ -5,6 +5,10 @@ require 'terminfo'
 module Berlin
   module Fake
 
+    CITY_WALL = ["2588".hex].pack("U")
+    NODE_WALL = "#"
+    PATH      = "."
+
     MAP_DEFINITION = {
       "types" => [
         {"name" => "node", "points" => 0, "soldiers_per_turn" => 0},
@@ -46,16 +50,6 @@ module Berlin
       "player_id"               => nil
     }
 
-    GAME_STATE = [
-      {"node_id" => 1, "player_id" => nil, "number_of_soldiers" => 0},
-      {"node_id" => 2, "player_id" => nil, "number_of_soldiers" => 0},
-      {"node_id" => 3, "player_id" => nil, "number_of_soldiers" => 0},
-      {"node_id" => 4, "player_id" => nil, "number_of_soldiers" => 0},
-      {"node_id" => 5, "player_id" => nil, "number_of_soldiers" => 0},
-      {"node_id" => 6, "player_id" => nil, "number_of_soldiers" => 0},
-      {"node_id" => 7, "player_id" => nil, "number_of_soldiers" => 0},
-      {"node_id" => 8, "player_id" => nil, "number_of_soldiers" => 0}
-    ]
 
     Move = Struct.new(:player_id, :from, :to, :number_of_soldiers)
 
@@ -116,6 +110,7 @@ module Berlin
         @player_ids = @state.map{ |id, n| n['player_id'] }.uniq.compact.sort
 
         @height, @width = TermInfo.screen_size
+        @height -= @player_ids.length + 1
         @map = 1.upto(@height).map { [" "] * @width }
       end
 
@@ -126,20 +121,11 @@ module Berlin
       def as_display
         paths_as_display
         nodes_as_display
-        @map.map{ |a| a.join '' }.join("\n")
+        map = @map.map{ |a| a.join '' }.join("\n")
+        [map, *@player_ids.map{ |id| id.to_s.foreground(color(id)) }].join("\n")
       end
 
       def paths_as_display
-        #  [{"from"=>1, "to"=>2},
-        # {"from"=>2, "to"=>3},
-        # {"from"=>2, "to"=>5},
-        # {"from"=>3, "to"=>5},
-        # {"from"=>5, "to"=>8},
-        # {"from"=>8, "to"=>7},
-        # {"from"=>7, "to"=>4},
-        # {"from"=>6, "to"=>7},
-        # {"from"=>6, "to"=>4},
-        # {"from"=>4, "to"=>1}]}
         @map_definition['paths'].each do |path|
           from_node = @map_definition['nodes'][path['from']-1]
           to_node = @map_definition['nodes'][path['to']-1]
@@ -152,25 +138,21 @@ module Berlin
       end
 
       def draw_line(from, to)
-        xs = range(from[0], to[0]).to_a
-        ys = range(from[1], to[1]).to_a
+        xs = range(from[0], to[0])
+        ys = range(from[1], to[1])
 
         length = [xs.length, ys.length].max
 
         (0...length).each do |n|
-          begin
-            x = xs[(n.to_f/length * xs.length).floor]
-            y = ys[(n.to_f/length * ys.length).floor]
+          x = xs[(n.to_f/length * xs.length).floor]
+          y = ys[(n.to_f/length * ys.length).floor]
 
-            replace(x, y, "+")
-          rescue => e
-            binding.pry
-          end
+          replace(x, y, PATH)
         end
       end
 
       def range(from, to)
-        from > to ? (to..from) : (from..to)
+        from > to ? (to..from).to_a.reverse : (from..to).to_a
       end
 
       def node_position(node)
@@ -180,9 +162,9 @@ module Berlin
       end
 
       def nodes_as_display
-        # 12###
+        # ID###
         # # 12#
-        # 1###1
+        # V###S
         @map_definition['nodes'].each do |node|
           node_state = @state[node['id']]
 
@@ -190,20 +172,28 @@ module Berlin
 
           player_color = color(node_state.player_id)
 
+          meta = @map_definition['types'].detect{|n| n['name'] == node['type']}
+          value = meta['soldiers_per_turn'] + meta['points']
+
+          wall = value > 0 ? CITY_WALL : NODE_WALL
           (-1..1).each do |n|
-            replace(x-2, y+n, "#"*5, player_color)
+            replace(x-2, y+n, wall*5, player_color)
           end
 
           replace(x-2, y-1, node['id'])
           number_of_soldiers = node_state.number_of_soldiers.to_s.center(3)
           replace(x-1, y, number_of_soldiers, player_color)
-          # replace(x+1, y+1, 0)
+
+          if value > 0
+            soldiers_per_turn = meta['soldiers_per_turn'].to_s
+            replace(x-2, y+1, meta['points'])
+            replace(x+2, y+2 - soldiers_per_turn.length, soldiers_per_turn)
+          end
         end
       end
 
       def replace(x, y, str, foreground = nil)
         length = str.to_s.size
-        puts "replacing #{x}, #{y} with #{str}"
         (0...length).each do |n|
           char = str.to_s[n]
           @map[y][x+n] = foreground ? char.foreground(foreground) : char
@@ -274,40 +264,50 @@ class Berlin::Fake::Game
 
   def initialize(number_of_ai)
     @turn = 0
+    @map_definition = Berlin::Fake::MAP_DEFINITION
+    @game_info      = Berlin::Fake::GAME_INFO
 
-    @city_nodes = Berlin::Fake::MAP_DEFINITION['nodes'].select{ |node| node['type'] == 'city' }.map{ |node| node['id'] }
-    @ai_games = 1.upto(number_of_ai).map do |n|
-      ai_name = "AI ##{n}"
-      node = Berlin::Fake::GAME_STATE.detect{ |node| node['node_id'] == @city_nodes[n - 1] }
-      node['player_id'] = ai_name
-      node['number_of_soldiers'] = 5
-      ai_info = Berlin::Fake::GAME_INFO.dup
-      ai_info['player_id']  = ai_name
-      ai_info['game_id']    = n
-
-      Berlin::AI::Game.new(ai_info['game_id'], Berlin::Fake::MAP_DEFINITION, ai_info)
+    @game_state = @map_definition['nodes'].map do |node|
+      {"node_id" => node['id'], "player_id" => nil, "number_of_soldiers" => 0}
     end
 
-    player_name = "Player"
-    player_info = Berlin::Fake::GAME_INFO.dup
-    player_info['player_id']  = player_name
-    player_info['game_id']    = 0
-    node = Berlin::Fake::GAME_STATE.detect{ |node| node['node_id'] == @city_nodes[number_of_ai] }
-    node['player_id'] = player_name
-    node['number_of_soldiers'] = 5
+    @state = Berlin::Fake::State.new(@game_state.dup)
 
-    @player_game = Berlin::AI::Game.new(player_info['game_id'], Berlin::Fake::MAP_DEFINITION, player_info)
+    @city_nodes = @map_definition['nodes'].select{ |node| node['type'] == 'city' }.map{ |node| node['id'] }
 
-    @state = Berlin::Fake::State.new(Berlin::Fake::GAME_STATE.dup)
+    start_points = @map_definition['setup'][(number_of_ai + 1).to_s]
+
+    unless start_points
+      puts("This map cannot be played with #{number_of_ai+1} players. #{@map_definition['setup'].keys.join(', ')} are possible only")
+      exit
+    end
+
+    players = 1.upto(number_of_ai).map{ |n| "AI ##{n}" } << "Player"
+
+    @ai_games = players.each.with_index.map do |name, index|
+      start_points[index.to_s].each do |point|
+        node = @state.state[point['node']]
+
+        node['player_id'] = name
+        node['number_of_soldiers'] = point['number_of_soldiers']
+      end
+      ai_info = @game_info.dup
+      ai_info['player_id'] = name
+      ai_info['game_id'] = index
+
+      Berlin::AI::Game.new(ai_info['game_id'], @map_definition, ai_info)
+    end
+
+    @player_game = @ai_games.pop
   end
 
   def run
-    puts Berlin::Fake::Display.new(Berlin::Fake::MAP_DEFINITION, @state).as_display
+    puts Berlin::Fake::Display.new(@map_definition, @state).as_display
     pause
     while !@state.winner? && @turn < Berlin::Fake::GAME_INFO['maximum_number_of_turns']
       turn
       pause
-      puts Berlin::Fake::Display.new(Berlin::Fake::MAP_DEFINITION, @state).as_display
+      puts Berlin::Fake::Display.new(@map_definition, @state).as_display
       pause
     end
   end
