@@ -316,13 +316,16 @@ class Berlin::Fake::Game
       ai_info['player_id'] = name
       ai_info['game_id'] = index
 
+      map = Berlin::AI::Map.parse(@map_definition.dup.merge('player_id' => ai_info['player_id']))
       game = Berlin::AI::Game.new
+      game.map                      = map
       game.id                       = ai_info['game_id']
-      game.map                      = Berlin::AI::Map.parse(@map_definition.dup.merge('player_id' => ai_info['player_id']))
       game.player_id                = ai_info['player_id']
       game.time_limit_per_turn      = ai_info['time_limit_per_turn']
       game.maximum_number_of_turns  = ai_info['maximum_number_of_turns']
       game.number_of_players        = ai_info['number_of_players']
+      game.reset!
+
       game
     end
 
