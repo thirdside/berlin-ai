@@ -9,7 +9,7 @@ puts "|  _  ||  -__||   _||  |  ||     |    |       |_|   |_ "
 puts "|_____||_____||__|  |__|__||__|__|    |___|___|_______|"
 puts
 
-%w(game map node fake).each do |file|
+%w(game_internal game map_internal map node_internal node fake).each do |file|
   require File.expand_path(File.dirname( __FILE__ )) + "/ai/#{file}"
 end
 

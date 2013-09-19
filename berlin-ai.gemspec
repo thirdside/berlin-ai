@@ -11,6 +11,8 @@ Gem::Specification.new do |s|
   s.authors      = ["Christian Blais", "Guillaume Malette", "Jodi Giordano"]
   s.email        = ["christ.blais@gmail.com", "gmalette@gmail.com", "giordano.jodi@gmail.com"]
   s.homepage     = "http://github.com/thirdside/berlin-ai"
+  s.files        = `git ls-files`.split("\n")
+  s.executables  = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.summary      = "Berlin Artificial Intelligence"
   s.description  = "Berlin Artificial Intelligence"
 
@@ -21,7 +23,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'ruby-terminfo'
   s.add_dependency 'thin', '1.5.1'
 
-  s.files = `git ls-files`.split("\n")
+  s.add_development_dependency 'minitest'
+  s.add_development_dependency 'pry'
+
 
   s.require_paths = ['lib', 'test']
 end
