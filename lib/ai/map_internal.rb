@@ -21,7 +21,7 @@ module Berlin
             # the node and how many soldiers there is. We'll get back to that later.
             # map['nodes'] => [{:id => STRING}, ...]
             data['nodes'].each do |node|
-              node_data = node.merge(types[node['type']]).merge(:map => map)
+              node_data = node.merge(types[node['type']]).merge('map' => map)
               map.nodes_hash[node['id']] = Berlin::AI::Node.parse(node_data)
             end
 
