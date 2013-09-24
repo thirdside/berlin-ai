@@ -88,5 +88,13 @@ class NodeTest < Test::Unit::TestCase
     
     assert node.mine?
   end
+
+  def test_city_returns_true_if_type_is_city
+    city_node = Berlin::AI::Node.new "id" => 1, "type" => "city"
+    assert city_node.city?
+
+    normal_node = Berlin::AI::Node.new "id" => 1
+    assert !normal_node.city?
+  end
  
 end
