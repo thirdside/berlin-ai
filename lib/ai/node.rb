@@ -38,6 +38,11 @@ module Berlin
       def free?
         !owned?
       end
+
+      # Returns true if node is a city
+      def city?
+        type == "city"
+      end
       
       # Returns true if node owned by provided player id
       def owned_by?(player_id)

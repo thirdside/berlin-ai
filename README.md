@@ -89,6 +89,7 @@ node.occupied?                # Check if some soldiers are on the node.
 node.owned?                   # Check if a player (not only you) owns the node.
 node.mine?                    # Check if you own the node.
 node.free?                    # Check if no one own the node.
+node.city?                    # Check if node is a city.
 node.owned_by?(player_id)     # Check if the node is owned by a given player.
 node.adjacent_nodes           # Get a list of adjacent nodes.
 node.adjacent_nodes_and_self  # Get a list of adjacent nodes, including this node.
