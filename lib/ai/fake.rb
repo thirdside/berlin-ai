@@ -1,5 +1,3 @@
-require 'pry'
-require 'pry-debugger'
 require "net/http"
 require "uri"
 require 'rainbow'
@@ -180,7 +178,7 @@ module Berlin
       def as_display
         paths_as_display
         nodes_as_display
-        map = @map.map{ |a| a.join '' }.join("\n")
+        map = @map.map(&:join).join("\n")
         [map, *@player_ids.map{ |id| id.to_s.foreground(color(id)) }].join("\n")
       end
 
