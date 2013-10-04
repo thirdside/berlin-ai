@@ -17,7 +17,7 @@ set :verbose, true
 set :logger, Logger.new(STDOUT)
 
 # set tests to false
-$test_ais = false
+options = {}
 
 # Parse options
 OptionParser.new do |opts|
@@ -42,12 +42,16 @@ OptionParser.new do |opts|
     set :logger, Logger.new(l || 'berlin.log')
   end
 
+  opts.on("-m MAP_ID", "--map MAP_ID", "Which map to use from Berlin. Use in conjunction with TEST") do |m|
+    options[:map_id] = m
+  end
+
   opts.on("-t N", "--test N", Integer, "Test against N random AI") do |t|
     if t < 0 || t > 3
       puts "This map supports a maximum of 3 AI"
       exit 1
     end
-    $test_ais = t
+    options[:test_ais] = t
   end
 
   opts.on("-v", "--verbose", "Print information to STDOUT") do
@@ -101,8 +105,8 @@ def log level, message
   settings.logger.send(level, message) if settings.logger
 end
 
-if $test_ais
-  at_exit { Berlin::Fake::Game.new($test_ais).run }
+if options[:test_ais]
+  at_exit { Berlin::Fake::Game.new(options).run }
 else
   set :app_file, $0
 end

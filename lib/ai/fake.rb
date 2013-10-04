@@ -1,5 +1,7 @@
 require 'pry'
 require 'pry-debugger'
+require "net/http"
+require "uri"
 require 'rainbow'
 require 'terminfo'
 
@@ -283,9 +285,9 @@ module Berlin
       def remove_soldiers(move)
         origin = @state[move.from]
         if origin.player_id != move.player_id
-          errors << "Trying to move #{move.number_of_soldiers} soldiers from ##{move.from}. Node ##{move.from} belongs to #{origin.player_id}"
+          puts  "Trying to move #{move.number_of_soldiers} soldiers from ##{move.from}. Node ##{move.from} belongs to #{origin.player_id}"
         elsif origin.number_of_soldiers < move.number_of_soldiers
-          errors << "Trying to move #{move.number_of_soldiers} soldiers from ##{move.from}. Only #{origin.number_of_soldiers} soldiers available"
+          puts "Trying to move #{move.number_of_soldiers} soldiers from ##{move.from}. Only #{origin.number_of_soldiers} soldiers available"
         else
           origin.number_of_soldiers -= move.number_of_soldiers
           puts "\t[#{move.player_id}] Moves #{move.number_of_soldiers} soldiers from ##{move.from} to ##{move.to}"
@@ -319,9 +321,11 @@ end
 
 class Berlin::Fake::Game
 
-  def initialize(number_of_ai)
-    @turn = 0
-    @map_definition = Berlin::Fake::MAP_DEFINITION
+  def initialize(options)
+    @options = options
+    number_of_ai    = options[:test_ais]
+    @turn           = 0
+    map_definition
     @game_info      = Berlin::Fake::GAME_INFO
 
     @game_state = @map_definition['nodes'].map do |node|
@@ -366,6 +370,23 @@ class Berlin::Fake::Game
     end
 
     @player_game = @ai_games.pop
+  end
+
+  def map_definition
+    return @map_definition if @map_definition
+    if @options[:map_id]
+      uri = URI.parse("http://berlin-ai.com/maps/#{@options[:map_id]}.json")
+      response = Net::HTTP.get_response(uri)
+      begin
+        @map_definition = JSON(response.body).fetch('map').fetch('representation')
+      rescue => e
+        puts "There was a problem downloading the map #{@options[:map_id]}"
+        puts e.message
+        exit
+      end
+    else
+      @map_definition = Berlin::Fake::MAP_DEFINITION
+    end
   end
 
   def run
