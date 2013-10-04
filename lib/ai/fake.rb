@@ -11,52 +11,88 @@ module Berlin
     PATH      = "."
 
     MAP_DEFINITION = {
-      "directed" => false,
-
       "types" => [
-        {"name" => "node", "points" => 0, "soldiers_per_turn" => 0},
-        {"name" => "city", "points" => 1, "soldiers_per_turn" => 1}
+        {"name" => "city","soldiers_per_turn" => 1,"points" => 1},
+        {"name" => "node","soldiers_per_turn" => 0,"points" => 0}
       ],
-
       "nodes" => [
         {"id" => 1, "type" => "city", "x" => 10, "y" => 10},
-        {"id" => 2, "type" => "node", "x" => 50, "y" => 10},
-        {"id" => 3, "type" => "city", "x" => 90, "y" => 10},
-        {"id" => 4, "type" => "node", "x" => 10, "y" => 50},
-        {"id" => 5, "type" => "node", "x" => 90, "y" => 50},
-        {"id" => 6, "type" => "city", "x" => 10, "y" => 90},
-        {"id" => 7, "type" => "node", "x" => 50, "y" => 90},
-        {"id" => 8, "type" => "city", "x" => 90, "y" => 90}
+        {"id" => 2, "type" => "city", "x" => 30, "y" => 10},
+        {"id" => 3, "type" => "city", "x" => 10, "y" => 30},
+        {"id" => 4, "type" => "city", "x" => 30, "y" => 30},
+        {"id" => 5, "type" => "city", "x" => 90, "y" => 10},
+        {"id" => 6, "type" => "city", "x" => 70, "y" => 10},
+        {"id" => 7, "type" => "city", "x" => 90, "y" => 30},
+        {"id" => 8, "type" => "city", "x" => 70, "y" => 30},
+        {"id" => 9, "type" => "city", "x" => 10, "y" => 90},
+        {"id" => 10, "type" => "city", "x" => 10, "y" => 70},
+        {"id" => 11, "type" => "city", "x" => 30, "y" => 90},
+        {"id" => 12, "type" => "city", "x" => 30, "y" => 70},
+        {"id" => 13, "type" => "city", "x" => 90, "y" => 90},
+        {"id" => 14, "type" => "city", "x" => 70, "y" => 90},
+        {"id" => 15, "type" => "city", "x" => 90, "y" => 70},
+        {"id" => 16, "type" => "city", "x" => 70, "y" => 70},
+        {"id" => 17, "type" => "node", "x" => 25, "y" => 50},
+        {"id" => 18, "type" => "node", "x" => 75, "y" => 50},
+        {"id" => 19, "type" => "node", "x" => 40, "y" => 50},
+        {"id" => 20, "type" => "node", "x" => 60, "y" => 50},
+        {"id" => 21, "type" => "node", "x" => 50, "y" => 25},
+        {"id" => 22, "type" => "node", "x" => 50, "y" => 75},
+        {"id" => 23, "type" => "node", "x" => 50, "y" => 40},
+        {"id" => 24, "type" => "node", "x" => 50, "y" => 60}
       ],
-
-      "paths" => [
+      "paths"=> [
         {"from" => 1, "to" => 2},
+        {"from" => 1, "to" => 3},
         {"from" => 2, "to" => 3},
-        {"from" => 2, "to" => 5},
-        {"from" => 3, "to" => 5},
-        {"from" => 5, "to" => 8},
-        {"from" => 8, "to" => 7},
-        {"from" => 7, "to" => 4},
+        {"from" => 2, "to" => 4},
+        {"from" => 3, "to" => 4},
+        {"from" => 5, "to" => 6},
+        {"from" => 5, "to" => 7},
         {"from" => 6, "to" => 7},
-        {"from" => 6, "to" => 4},
-        {"from" => 4, "to" => 1},
+        {"from" => 6, "to" => 8},
+        {"from" => 7, "to" => 8},
+        {"from" => 9, "to" => 10},
+        {"from" => 9, "to" => 11},
+        {"from" => 10, "to" => 11},
+        {"from" => 10, "to" => 12},
+        {"from" => 11, "to" => 12},
+        {"from" => 13, "to" => 14},
+        {"from" => 13, "to" => 15},
+        {"from" => 14, "to" => 15},
+        {"from" => 14, "to" => 16},
+        {"from" => 15, "to" => 16},
+        {"from" => 4, "to" => 19},
+        {"from" => 4, "to" => 23},
+        {"from" => 8, "to" => 20},
+        {"from" => 8, "to" => 23},
+        {"from" => 12, "to" => 19},
+        {"from" => 12, "to" => 24},
+        {"from" => 16, "to" => 24},
+        {"from" => 16, "to" => 20},
+        {"from" => 17, "to" => 19},
+        {"from" => 18, "to" => 20},
+        {"from" => 21, "to" => 23},
+        {"from" => 22, "to" => 24},
+        {"from" => 3, "to" => 17},
+        {"from" => 10, "to" => 17},
+        {"from" => 7, "to" => 18},
+        {"from" => 15, "to" => 18},
+        {"from" => 6, "to" => 21},
+        {"from" => 2, "to" => 21},
+        {"from" => 11, "to" => 22},
+        {"from" => 14, "to" => 22}
       ],
-
       "setup" => {
         "2" => {
-          "0" => [{'node' => 1, 'number_of_soldiers' => 5}],
-          "1" => [{'node' => 6, 'number_of_soldiers' => 5}],
-        },
-        "3" => {
-          "0" => [{'node' => 1, 'number_of_soldiers' => 5}],
-          "1" => [{'node' => 6, 'number_of_soldiers' => 5}],
-          "2" => [{'node' => 8, 'number_of_soldiers' => 5}],
+          "0" => [{"node" => 1,"number_of_soldiers" => 5}],
+          "1" => [{"node" => 13,"number_of_soldiers" => 5}]
         },
         "4" => {
-          "0" => [{'node' => 1, 'number_of_soldiers' => 5}],
-          "1" => [{'node' => 3, 'number_of_soldiers' => 5}],
-          "2" => [{'node' => 6, 'number_of_soldiers' => 5}],
-          "3" => [{'node' => 8, 'number_of_soldiers' => 5}],
+          "0" => [{"node" => 1,"number_of_soldiers" => 5}],
+          "1" => [{"node" => 5, "number_of_soldiers" => 5}],
+          "2" => [{"node" => 9, "number_of_soldiers" => 5}],
+          "3" => [{"node" => 13, "number_of_soldiers" => 5}]
         }
       }
     }
