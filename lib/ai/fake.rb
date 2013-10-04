@@ -6,7 +6,7 @@ require 'terminfo'
 module Berlin
   module Fake
 
-    CITY_WALL = ["2588".hex].pack("U")
+    CITY_WALL = "\u2588"
     NODE_WALL = "#"
     PATH      = "."
 
