@@ -4,6 +4,8 @@ require_relative '../lib/ai/node'
 require "test/unit"
  
 class NodeTest < Test::Unit::TestCase
+
+  Struct.new('Map', :player_id)
  
   def test_equals_returns_true_if_two_nodes_have_the_same_id
     node1 = Berlin::AI::Node.new(:id => 1)
@@ -56,6 +58,22 @@ class NodeTest < Test::Unit::TestCase
     assert !node.free?
   end
 
+  def test_foreign_returns_true_you_do_not_own_the_node
+    node = Berlin::AI::Node.new
+
+    node.map = Struct::Map.new(1)
+
+    assert node.foreign?
+
+    node.player_id = 1
+
+    assert !node.foreign?
+
+    node.player_id = 2
+
+    assert node.foreign?
+  end
+
   def test_owned_by_returns_true_if_owned_by_the_provided_player
     node = Berlin::AI::Node.new
 
@@ -66,27 +84,18 @@ class NodeTest < Test::Unit::TestCase
     assert node.owned_by?(1)
   end
 
-  def test_owned_returns_true_if_owned_by_a_player
-    node = Berlin::AI::Node.new
-
-    assert !node.owned?
-
-    node.player_id = 1
-
-    assert node.owned?
-  end
-
   def test_mine_returns_true_if_owned_by_current_player
-    Struct.new('Map', :player_id)
     node = Berlin::AI::Node.new
 
     node.map = Struct::Map.new(1)
 
     assert !node.mine?
+    assert !node.owned?
 
     node.player_id = 1
     
     assert node.mine?
+    assert node.owned?
   end
  
 end

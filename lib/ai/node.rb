@@ -19,24 +19,25 @@ module Berlin
         @number_of_soldiers > 0
       end
 
-      # Returns true if owned by any player
-      def owned?
-        !!@player_id
-      end
-
       # Returns true if yours
       def mine?
         owned_by?(@map.player_id)
       end
+      alias_method :owned?, :mine?
 
       # Returns true if owned by somebody else than you
       def enemy?
-        owned? && !mine?
+        !free? && !mine?
+      end
+
+      # Returns true if owned by somebody else than you
+      def foreign?
+        !mine?
       end
 
       # Returns true if no one on the node
       def free?
-        !owned?
+        @player_id.nil?
       end
       
       # Returns true if node owned by provided player id
