@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.executables  = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.summary      = "Berlin Artificial Intelligence"
   s.description  = "Berlin Artificial Intelligence"
+  s.license      = "copyleft"
 
   s.add_dependency 'sinatra', '1.4.3'
   s.add_dependency 'yajl-ruby', '1.1.0'
